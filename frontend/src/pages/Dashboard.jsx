@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
-import './Dashboard.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth, API_BASE_URL } from "../context/AuthContext";
+import "./Dashboard.css";
 
-const API_URL = "http://localhost:5000";
+const API_URL = API_BASE_URL;
 
 const CreatePost = ({ onPostCreated }) => {
-  const [content, setContent] = useState('');
-  const [error, setError] = useState('');
+  const [content, setContent] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { token } = useAuth();
 
@@ -18,7 +18,7 @@ const CreatePost = ({ onPostCreated }) => {
       return;
     }
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const response = await axios.post(
@@ -28,10 +28,10 @@ const CreatePost = ({ onPostCreated }) => {
           visibility: "public",
         },
         {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setContent('');
+      setContent("");
       onPostCreated(response.data);
     } catch (err) {
       console.error("Post creation error:", err);
@@ -61,8 +61,10 @@ const PostItem = ({ post }) => {
   return (
     <div className="post-item">
       <div className="post-header">
-        <span className="post-author">{post.user.name || 'Anonymous'}</span>
-        <span className="post-date">{new Date(post.created_at).toLocaleString()}</span>
+        <span className="post-author">{post.user.name || "Anonymous"}</span>
+        <span className="post-date">
+          {new Date(post.created_at).toLocaleString()}
+        </span>
       </div>
       <p className="post-content">{post.content}</p>
       <div className="post-actions">
@@ -96,7 +98,7 @@ const Dashboard = () => {
   const handlePostCreated = (newPost) => {
     // To show the new post immediately, we need to fetch the user info
     // For simplicity, we'll just refetch all posts.
-    fetchPosts(); 
+    fetchPosts();
   };
 
   return (
@@ -106,7 +108,7 @@ const Dashboard = () => {
         {loading ? (
           <p>Loading posts...</p>
         ) : (
-          posts.map(post => <PostItem key={post.post_id} post={post} />)
+          posts.map((post) => <PostItem key={post.post_id} post={post} />)
         )}
       </div>
     </div>

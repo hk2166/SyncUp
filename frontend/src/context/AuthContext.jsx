@@ -2,9 +2,8 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// Use port 5001 because macOS may reserve port 5000 for system services (AirPlay/Control Center).
-// You can also set REACT_APP_API_URL in your environment to override this.
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5001";
+// Use the environment variable if available, otherwise default to localhost
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 export const API_BASE_URL = API_URL;
 const AuthContext = createContext();
 
@@ -24,8 +23,6 @@ export const AuthProvider = ({ children }) => {
       delete axios.defaults.headers.common["Authorization"];
     }
   }, [token]);
-
-  
 
   useEffect(() => {
     if (!token) {
@@ -79,14 +76,15 @@ export const AuthProvider = ({ children }) => {
       navigate("/feed");
       return true;
     } catch (err) {
-      const message = err.response?.data?.error || "Login failed. Please try again.";
+      const message =
+        err.response?.data?.error || "Login failed. Please try again.";
       console.error("Login error:", message);
       setError(message);
       setLoading(false);
       return false;
     }
   };
-  
+
   const signup = async (name, email, password) => {
     setLoading(true);
     setError("");
@@ -98,7 +96,8 @@ export const AuthProvider = ({ children }) => {
       });
       return true;
     } catch (err) {
-      const message = err.response?.data?.error || "Signup failed. Please try again.";
+      const message =
+        err.response?.data?.error || "Signup failed. Please try again.";
       console.error("Signup error:", message);
       setError(message);
       return false;
